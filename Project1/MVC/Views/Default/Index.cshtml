@@ -1,0 +1,30 @@
+﻿@using System.Web.Script.Serialization
+@model BootstrapExample.ViewModels.HomeViewModel
+@{
+    ViewBag.Title = "Index";
+    var serializer = new JavaScriptSerializer();
+}
+@section scripts {
+    <script>
+        var __teams = @Html.Raw(@serializer.Serialize(Model.Teams));
+        var __positions = @Html.Raw(@serializer.Serialize(Model.Positions));
+    </script>
+    <script src="/Content/JS/Util.js"></script>
+    <script src="/Content/JS/Home.js"></script>
+}
+
+<h2>My League</h2>
+
+<a class="btn">Add Team</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: teams">
+        <tr><td data-bind="text:TeamID"></td><td data-bind="text:Name"></td></tr>        
+    </tbody>
+</table>

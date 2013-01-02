@@ -50,7 +50,14 @@ namespace BootstrapExample.Models
 
             positionList.ForEach(position => context.Positions.Add(position));
 
-            context.Teams.Add(new Team {Name = "Default Team"});
+            context.Teams.Add(new Team
+            {
+                Name = "Default Team",
+                Players = new List<Player>()
+                {
+                      new Player{ Name="Jonny Mantis", Number= 13, Position = positionList[0]}
+                }
+            });
 
             context.SaveChanges();
         }

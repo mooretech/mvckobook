@@ -9,7 +9,7 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse" style="margin-bottom: 0px;">
         <div class="navbar-inner">
             <div class="container">
                 <a class="brand" href="#">Bootstrap / Knockout Project</a>
@@ -24,6 +24,7 @@
     @Scripts.Render("~/bundles/jquery")
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.0.js"></script>
+     <script src="/Scripts/knockout.mapping-2.0.0.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

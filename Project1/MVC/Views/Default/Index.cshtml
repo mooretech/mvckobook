@@ -1,4 +1,5 @@
 ﻿@using System.Web.Script.Serialization
+@using BootstrapExample.Models
 @model BootstrapExample.ViewModels.HomeViewModel
 @{
     ViewBag.Title = "Index";
@@ -8,6 +9,8 @@
     <script>
         var __teams = @Html.Raw(@serializer.Serialize(Model.Teams));
         var __positions = @Html.Raw(@serializer.Serialize(Model.Positions));
+        var __newTeamTemplate = @Html.Raw(@serializer.Serialize(new Team { Players = new List<Player>() }));
+        var __newPlayerTemplate = @Html.Raw(@serializer.Serialize(new Player()));
     </script>
     <script src="/Content/JS/Util.js"></script>
     <script src="/Content/JS/Home.js"></script>
@@ -15,16 +18,93 @@
 
 <h2>My League</h2>
 
-<a class="btn">Add Team</a>
+<ul class="breadcrumb">
+    <li><a href="#" data-bind="click:cancelTeamEdit">League</a> <span class="divider">/</span></li>
+    <li data-bind="visible:teamDetailVisible(), text:editingTeam().Name"></li>
+</ul>
 
-<table class="table table-striped">
+<a class="btn" data-bind="click:newTeam, visible:!teamDetailVisible()">Add Team</a>
+
+<table class="table table-striped" data-bind="visible:!teamDetailVisible()">
     <thead>
         <tr>
-            <th>ID</th>
             <th>Name</th>
+            <th>Players</th>
+            <th></th>
         </tr>
     </thead>
-    <tbody data-bind="foreach: teams">
-        <tr><td data-bind="text:TeamID"></td><td data-bind="text:Name"></td></tr>        
+    <tbody data-bind="template: { name: 'team-template', foreach: teams }">
     </tbody>
 </table>
+
+<div data-bind="visible:teamDetailVisible">
+    <div class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" style="width: 50px; text-align: left;" for="teamName">Name</label>
+            <div class="controls">
+                <input type="text" id="teamName" data-bind="value:editingTeam().Name">
+            </div>
+        </div>
+    </div>
+    <span>Players</span>
+    <a class="btn btn-link" data-bind="click:newPlayer">Add Player</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Position</th>
+            </tr>
+        </thead>
+        <tbody data-bind="template: { name: 'playerTemplate', foreach: editingTeam().Players }">
+        </tbody>
+    </table>
+</div>
+
+<script type="text/html" id="team-template">
+    <tr>
+        <td data-bind="text:Name"></td>
+        <td data-bind="text:$root.playerCount($data)"></td>
+        <td><a href="#" data-bind="click:$parent.editTeam">Edit</a></td>
+    </tr>
+</script>
+
+
+<script id="playerTemplate" type="text/html">
+    <tr>
+        <td data-bind="text:Number"></td>
+        <td data-bind="text:Name"></td>
+        <td data-bind="text:$parent.positionName($data.PositionID())"></td>
+        <td><a href="#" data-bind="click:$parent.editPlayer">Edit</a></td>
+    </tr>
+</script>
+
+<div data-bind="bootstrapModal:modalModel"></div>
+
+<!-- Modal template -->
+<script id="bootstrapModalTemplate" type="text/html">
+    <div class="modal-header">
+        <button type="button" class="close" data-bind="click:close" aria-hidden="true">&times;</button>
+        <h3>Player</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <label class="control-label" style="width: 50px; text-align: left;" for="playerName">Name</label>
+            <div class="controls">
+                <input type="text" id="playerName" data-bind="value:editingPlayer().Name">
+            </div>
+            <label class="control-label" style="width: 50px; text-align: left;" for="playerNumber">Number</label>
+            <div class="controls">
+                <input type="number" required id="playerNumber" data-bind="value:editingPlayer().Number">
+            </div>
+            <label class="control-label" style="width: 50px; text-align: left;" for="playerPosition">Position</label>
+            <div class="controls">
+                <select id="playerPosition" data-bind="options:__positions, optionsText:'Name', optionsValue:'PositionID', value:editingPlayer().PositionID"></select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-bind="click:close">Close</a>
+        <a href="#" class="btn btn-primary" data-bind="click:save">Save</a>
+    </div>
+</script>
